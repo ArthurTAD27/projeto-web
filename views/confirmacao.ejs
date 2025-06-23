@@ -1,0 +1,11 @@
+<h2>Amostra salva com sucesso!</h2>
+<p>Coletor: <%= amostra.coletor %></p>
+<p>Índice utilizado: <%= amostra.nome_indice %></p>
+<p>Data de envio: <%= amostra.data_envio %></p>
+
+<h3>Variáveis enviadas:</h3>
+<ul>
+  <% amostra.variaveis.forEach(v => { %>
+    <li><strong><%= v.nome %></strong>: <%= v.valor %> <%= v.unidade %></li>
+  <% }) %>
+</ul>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h1 class="mb-4"><%= indice.nome %></h1>
+    <p class="mb-4"><%= indice.descricao %></p>
+
+    <form action="/resultcol" method="POST">
+      <% indice.variaveis.forEach(v => { %>
+        <div class="mb-3">
+          <label for="<%= v.id %>" class="form-label"><%= v.nome %> <% if(v.unidade) { %> (<%= v.unidade %>) <% } %></label>
+          <input type="number" step="any" class="form-control" name="<%= v.id %>" id="<%= v.id %>" required>
+        </div>
+      <% }) %>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Enviar Amostra</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

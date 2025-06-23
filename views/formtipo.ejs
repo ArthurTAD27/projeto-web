@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Índices</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0077b6, #caf0f8);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .form-container {
+      background-color: #ffffffcc;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .usuario-info {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .titulo {
+      color: #03045e;
+    }
+
+    .btn-custom {
+      background-color: #0077b6;
+      color: white;
+    }
+
+    .btn-custom:hover {
+      background-color: #023e8a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Usuário logado -->
+  <div class="usuario-info">
+    Usuário: <%= usuario %>
+  </div>
+
+  <div class="form-container">
+    <h2 class="text-center mb-4 titulo">Avaliação da Água</h2>
+
+    <form action="/avaliar" method="POST">
+      <div class="mb-4">
+        <label for="indice" class="form-label">Escolha o tipo de índice para avaliação:</label>
+        <select class="form-select form-select-lg" id="indice" name="indice" required>
+          <% Object.entries(indices).forEach(([key, value]) => { %>
+            <option value="<%= key %>">
+              <%= value.nome %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-custom btn-lg">Avaliar</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

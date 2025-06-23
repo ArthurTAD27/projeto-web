@@ -1,0 +1,37 @@
+{
+  "coletor": "Claudio",
+  "indice": "iqa_art",
+  "nome_indice": "Índice de Qualidade da Água (IQA - ART)",
+  "data_envio": "2025-06-23T10:54:45.634Z",
+  "variaveis": [
+    {
+      "id": "CE",
+      "nome": "CONDUTIVIDADE ELÉTRICA",
+      "unidade": "g/L",
+      "valor": 1,
+      "escore": 1,
+      "peso": 1
+    },
+    {
+      "id": "CE2",
+      "nome": "CONDUTIVIDADE ELÉTRICA2",
+      "unidade": "",
+      "valor": 1,
+      "escore": 1,
+      "peso": 1
+    },
+    {
+      "id": "CO",
+      "nome": "COLERANTES INTOLERANTES",
+      "unidade": "mg/L",
+      "valor": 1,
+      "escore": 1,
+      "peso": 1
+    }
+  ],
+  "status": "concluido",
+  "escore_soma": 1,
+  "escore_produto": 1,
+  "estado": "Ruim",
+  "descricao": "omg\r\n"
+}

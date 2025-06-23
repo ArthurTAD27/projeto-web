@@ -1,0 +1,67 @@
+{
+  "coletor": "Claudio",
+  "indice": "iqa_bascaron",
+  "nome_indice": "Índice de Qualidade da Água (IQA - Bascarón)",
+  "data_envio": "2025-06-23T09:47:46.468Z",
+  "variaveis": [
+    {
+      "id": "ce",
+      "nome": "Condutividade Elétrica (CE)",
+      "unidade": "µS/cm",
+      "valor": 1
+    },
+    {
+      "id": "tb",
+      "nome": "Turbidez (TB)",
+      "unidade": "NTU",
+      "valor": 1
+    },
+    {
+      "id": "dbo",
+      "nome": "Demanda Bioquímica de Oxigênio (DBO)",
+      "unidade": "mg/L",
+      "valor": 1
+    },
+    {
+      "id": "delta_od",
+      "nome": "Variação de OD (|ΔOD|)",
+      "unidade": "mg/L",
+      "valor": 1
+    },
+    {
+      "id": "log_ctt",
+      "nome": "Log Contagem Total de Coliformes (Log CTT)",
+      "unidade": "log UFC/100mL",
+      "valor": 1
+    },
+    {
+      "id": "n",
+      "nome": "Nitrogênio Total (N)",
+      "unidade": "mg/L",
+      "valor": 1
+    },
+    {
+      "id": "p",
+      "nome": "Fósforo Total (P)",
+      "unidade": "mg/L",
+      "valor": 1
+    },
+    {
+      "id": "cla",
+      "nome": "Cloretos (Cl⁻)",
+      "unidade": "mg/L",
+      "valor": 1
+    },
+    {
+      "id": "delta_ph",
+      "nome": "Variação de pH (|ΔpH|)",
+      "unidade": "",
+      "valor": 1
+    }
+  ],
+  "status": "pendente",
+  "escore_soma": null,
+  "escore_produto": null,
+  "estado": "",
+  "descricao": ""
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Solicitações Pendentes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #cbe9f7, #e2f0ed);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-bar {
+      background-color: #007bff;
+      color: white;
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      padding: 0.75rem 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .card {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+        
+    <div class="top-bar">
+      Técnico: <%= usuario %>
+    </div>
+
+    <h2 class="mb-4 text-center">Solicitações de Análise</h2>
+
+    <% if (amostras.length === 0) { %>
+      <p class="text-center">Nenhuma amostra pendente.</p>
+    <% } else { %>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <% amostras.forEach(a => { %>
+          <div class="col">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title"><%= a.nome_indice %></h5>
+                <p class="card-text"><strong>Coletor:</strong> <%= a.coletor %></p>
+                <p class="card-text"><strong>Data:</strong> <%= new Date(a.data_envio).toLocaleString() %></p>
+              </div>
+              <div class="card-footer text-end">
+                <a href="/tecnico/amostra/<%= a.coletor %>/<%= a.arquivo %>" class="btn btn-primary btn-sm">Acessar</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
