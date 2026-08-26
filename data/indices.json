@@ -1,29 +1,9 @@
 {
   "indices": {
     "iqa_bascaron": {
-      "nome": "Índice de Qualidade da Água (IQA - Bascarón)",
-      "descricao": "Índice baseado em parâmetros físico-químicos da água, vasco",
+      "nome": "Índice de Qualidade da Água (IQA - Báscaron)",
+      "descricao": "Índice baseado em parâmetros físico-químicos da água.",
       "variaveis": [
-        {
-          "id": "tb",
-          "nome": "Turbidez (TB)",
-          "unidade": "NTU"
-        },
-        {
-          "id": "dbo",
-          "nome": "Demanda Bioquímica de Oxigênio (DBO)",
-          "unidade": "mg/L"
-        },
-        {
-          "id": "delta_od",
-          "nome": "Variação de OD (|ΔOD|)",
-          "unidade": "mg/L"
-        },
-        {
-          "id": "log_ctt",
-          "nome": "Log Contagem Total de Coliformes (Log CTT)",
-          "unidade": "log UFC/100mL"
-        },
         {
           "id": "n",
           "nome": "Nitrogênio Total (N)",
@@ -38,78 +18,17 @@
           "id": "cla",
           "nome": "Cloretos (Cl⁻)",
           "unidade": "mg/L"
-        },
-        {
-          "id": "delta_ph",
-          "nome": "Variação de pH (|ΔpH|)",
-          "unidade": ""
-        },
-        {
-          "id": "ce",
-          "nome": "condutividade eletrica",
-          "unidade": ""
         }
       ]
     },
-    "ieqf_tipo1": {
-      "nome": "Índice de Enquadramento da Qualidade da Água (IEQf - Tipo 1)",
-      "descricao": "Índice baseado em funções lineares de subíndices para variáveis da água.",
+    "indice_genI": {
+      "nome": "índice generico",
+      "descricao": "um indice qualquer",
       "variaveis": [
         {
           "id": "ce",
-          "nome": "Condutividade Elétrica (CE)",
-          "unidade": "µS/cm",
-          "formula": "ECE = -0,0567 × CE + 142,43",
-          "valor": ""
-        },
-        {
-          "id": "dbo",
-          "nome": "Demanda Bioquímica de Oxigênio (DBO)",
-          "unidade": "mg/L",
-          "formula": "EDBO = -1,2375 × DBO + 149,5",
-          "valor": ""
-        },
-        {
-          "id": "dqo",
-          "nome": "Demanda Química de Oxigênio (DQO)",
-          "unidade": "mg/L",
-          "formula": "EDQO = -0,5824 × DQO + 146,6",
-          "valor": ""
-        },
-        {
-          "id": "sst",
-          "nome": "Sólidos Suspensos Totais (SST)",
-          "unidade": "mg/L",
-          "formula": "ESST = -0,707 × SST + 128,39",
-          "valor": ""
-        },
-        {
-          "id": "nam",
-          "nome": "Nitrogênio Amoniacal (NAM)",
-          "unidade": "mg/L",
-          "formula": "ENAM = -6,6 × NAM + 133",
-          "valor": ""
-        },
-        {
-          "id": "n",
-          "nome": "Nitrogênio Total (N)",
-          "unidade": "mg/L",
-          "formula": "EN = -6,6 × N + 166",
-          "valor": ""
-        },
-        {
-          "id": "p",
-          "nome": "Fósforo Total (P)",
-          "unidade": "mg/L",
-          "formula": "EP = -33 × P + 133",
-          "valor": ""
-        },
-        {
-          "id": "ctt",
-          "nome": "Coliformes Termotolerantes Totais (CTT)",
-          "unidade": "UFC/100mL",
-          "formula": "ECTT = -0,002 × CTT + 102,02",
-          "valor": ""
+          "nome": "CONDUTIVIDADE ELÉTRICA",
+          "unidade": "µS/cm"
         }
       ]
     }

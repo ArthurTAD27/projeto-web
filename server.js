@@ -1,96 +1,633 @@
 const express = require('express');
 const session = require('express-session');
-const path = require('path');
+const axios = require('axios'); 
 const app = express();
-const fs = require('fs');
+
+//npms: npm install axios bootstrap dotenv ejs express express-ejs-layouts express-session
+
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+const expressLayouts = require('express-ejs-layouts'); 
+app.use(expressLayouts); 
+app.set('layout','layouts/default');
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
 
 app.use(session({
-  secret: 'agua-secreta',
+  secret: 'e8cfd4de18d59aa317f018ce4f1b77fcf373b339b1c2fd884d0a982dc53fe7217fc82e83b295db2df43724e24311cb75',
   resave: false,
   saveUninitialized: false
 }));
-const dadosget = require('./src/dadosGET')
-const tecnicoget = require('./src/tecnicoGET')
-const adminget = require('./src/adminGET')
-const coletorget = require('./src/coletorGET')
-const formtipoget = require('./src/formtipoGET')
-const resultsget = require('./src/resultsGET')
-const avaliarpost = require('./src/avaliarPOST')
-const resultcolget = require('./src/resultcolGET')
-const veramostraget = require('./src/veramostraGET')
-const loginpost = require('./src/loginPOST')
-const solicitacoesget = require('./src/solicitacoesGET')
-const amostratecget = require('./src/amostratecGET')
-const amostratecpost = require('./src/amostratecPOST')
-const tecfinalizarget = require('./src/tecfinalizarGET')
-const tecfinalizarpost = require('./src/tecfinalizarPOST')
-const indicesadminget = require('./src/indicesadminGET')
-const indicesnovoget = require('./src/indicesnovoGET')
-const indicesnovopost = require('./src/indicesnovoPOST')
-const indicesdeletarpost = require('./src/indicedeletarPOST');
-const indiceeditarget = require('./src/indiceeditarGET')
-const indiceeditarpost = require('./src/indiceeditarPOST');
-const usuariosget = require('./src/usuariosGET');
-const usuariodeletarpost = require('./src/usuariodeletarPOST');
-const usuarionovoget = require('./src/usuarionovoGET');
-const usuarionovopost = require('./src/usuarionovoPOST');
 
-app.get('/', (req, res) => { return dadosget(req,res)});
 
-app.get('/tecnico', (req, res) => {return tecnicoget(req,res)});
+app.get('/', async (req, res) => {
+  try {
+    await new Promise(resolve => req.session.destroy(resolve));
+    res.render('index'); 
+  } catch (err) {
+    res.status(500).send('Erro ao carregar dados');
+  }
+});
 
-app.get('/admin', (req, res) => {return adminget(req,res)});
- 
-app.get('/coletor', (req, res) => {return coletorget(req,res)});
+app.post('/login', async (req, res) => {
+  try {
+    const { usuario, senha } = req.body;
 
-app.get('/formtipo', (req, res) => {return formtipoget(req,res)});
+    const response = await axios.post('http://localhost:3000/login', {
+      usuario,
+      senha
+    });
 
-app.get('/results', (req, res) => {return resultsget(req,res)});
+    const dados = response.data;
 
-app.post('/avaliar', (req, res) => {return avaliarpost(req,res)});
+    req.session.usuario = dados;
 
-app.post('/resultcol', (req, res) => {return resultcolget(req,res)});
+    switch (dados.id) {
+      case 'admin1':
+        return res.redirect('/admin');
+      case 'tecnico1':
+        return res.redirect('/tecnico');
+      case 'coletor1':
+        return res.redirect('/coletor');
+      default:
+        return res.status(400).send('Perfil desconhecido');
+    }
+  } catch (err) {
+    return res.send(`
+      <script>
+        alert("Usuário ou senha incorretos!");
+        window.location.href = "/";
+      </script>
+    `);
+  }
+});
+app.get('/admin', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+  const usuario = user.nome;
+  res.render('admin', { usuario });
+});
+
+app.get('/tecnico', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'tecnico1') return res.redirect('/');
+  const usuario = user.nome;
+  res.render('tecnico',{usuario});
+});
+
+app.get('/coletor', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'coletor1') return res.redirect('/');
+  const usuario = user.nome;
+  res.render('coletor', { usuario });
+});
+
+app.get('/formtipo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'coletor1') return res.redirect('/');
+  try {
+    const response = await axios.get('http://localhost:3000/formtipo'); 
+    const { indices } = response.data;
+    res.render('formtipo', { usuario: user.nome, indices });
+  } catch (err) {
+    console.error('Erro ao buscar índices da API:', err);
+    res.status(500).send('Erro ao carregar os índices.');
+  }
+});
+
+app.get('/results', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'coletor1') return res.redirect('/');
+  try {
+    const response = await axios.get('http://localhost:3000/results', {
+      headers: {
+        'x-usuario': user.nome
+      }
+    });
+
+    const { amostras } = response.data;
+    res.render('results', { usuario: user.nome, amostras });
+  } catch (erro) {
+    console.error('Erro ao buscar resultados da API:', erro);
+    res.status(500).send('Erro ao carregar os resultados.');
+  }
+});
+
+app.post('/avaliar', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'coletor1') return res.redirect('/');
+
+   const indiceSelecionado = req.body.indice; 
+   req.session.indiceSelecionado = indiceSelecionado;
+
+  try {
+    const response = await axios.post('http://localhost:3000/avaliar', null, {
+      headers: {
+        'x-indice': indiceSelecionado
+      }
+    });
+
+    const indiceJson = response.data;
+
+    res.render('formulario_indice', {
+      usuario: user,
+      indice: indiceJson
+    });
+
+  } catch (erro) {
+    console.error('Erro ao buscar índice da API:', erro);
+    res.status(500).send('Erro ao carregar o índice.');
+  }
+});
+
+app.post('/resultcol', async (req, res) => {
+  const dados = req.body;
+  const user = req.session.usuario;
+  const indiceSelecionado = req.session.indiceSelecionado;
   
-app.get('/ver-amostra/:arquivo', (req, res) => {return veramostraget(req,res)});
+  if (!user || user.id !== 'coletor1') return res.redirect('/');
+  if (!indiceSelecionado) return res.redirect('/avaliar');
+  try {
+    await axios.post('http://localhost:3000/resultcol', dados, {
+      headers: {
+        'x-coletor': user.nome,
+        'x-indice': String(indiceSelecionado)
+      }
+    });
 
-app.post('/login', (req, res) => {return loginpost(req,res)});
+    res.send(`
+      <script>
+        alert('Amostra enviada com sucesso!');
+        window.location.href = '/coletor';
+      </script>
+    `);
+  } catch (err) {
+    console.error('Erro ao enviar amostra:', err);
+    res.status(500).send('Erro ao enviar amostra.');
+  }
+});
 
-app.get('/solicitacoes', (req, res) => {return solicitacoesget(req,res)});
+app.get('/ver-amostra/:arquivo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'coletor1') return res.redirect('/');
+  const usuario = user.nome;
 
-app.get('/tecnico/amostra/:coletor/:arquivo', (req, res) => {return amostratecget(req,res)});
+  try {
+    const response = await axios.get(`http://localhost:3000/ver-amostra/${req.params.arquivo}`, {
+      headers: {
+        'x-usuario': usuario
+      }
+    });
 
-app.post('/tecnico/amostra/:coletor/:arquivo', (req, res) => {return amostratecpost(req,res)});
+    const { amostra } = response.data;
 
-app.get('/tecnico/amostra/:coletor/:arquivo/finalizar', (req, res) => {return tecfinalizarget(req,res)});
+    res.render('amostra_detalhes', { usuario, amostra });
+  } catch (err) {
+    console.error('Erro ao buscar amostra da API:', err);
+    res.status(500).send('Erro ao carregar a amostra.');
+  }
+});
 
-app.post('/tecnico/amostra/:coletor/:arquivo/finalizar', (req, res) => {return tecfinalizarpost(req,res)});
+app.get('/solicitacoes', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'tecnico1') return res.redirect('/');
+  const usuario = user.nome;
 
-app.get('/indices', (req, res) => {return indicesadminget(req,res)});
+  try {
+    const response = await axios.get('http://localhost:3000/solicitacoes');
+    const { amostras } = response.data;
 
-app.get('/indices/novo', (req, res) => {return indicesnovoget(req,res)});
+    res.render('solicitacoes', { usuario, amostras });
+  } catch (err) {
+    console.error('Erro ao buscar solicitações da API:', err);
+    res.status(500).send('Erro ao carregar solicitações.');
+  }
+});
 
-app.post('/indices/novo', (req, res) => {return indicesnovopost(req,res)});
+app.get('/tecnico/amostra/:coletor/:arquivo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'tecnico1') return res.redirect('/');
+  const usuario = user.nome;
 
-app.post('/indices/deletar/:id', (req, res) => {return indicesdeletarpost(req,res)});
+  try {
+    const response = await axios.get(`http://localhost:3000/tecnico/amostra/${req.params.coletor}/${req.params.arquivo}`);
+    const dados = response.data;
 
-app.get('/indices/editar/:id', (req, res) => {return indiceeditarget(req,res)});
+    if (dados.erro) {
+      return res.send(dados.erro);
+    }
 
-app.post('/indices/editar/:id', (req, res) => {return indiceeditarpost(req,res)});
+    res.render('tecnico_amostra', {
+      usuario,
+      coletor: dados.coletor,
+      arquivo: dados.arquivo,
+      amostra: dados.amostra
+    });
+  } catch (err) {
+    console.error('Erro ao buscar amostra da API:', err);
+    res.status(500).send('Erro ao carregar a amostra.');
+  }
+});
 
-app.get('/usuarios', (req, res) => {return usuariosget(req,res)});
+app.post('/tecnico/amostra/:coletor/:arquivo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'tecnico1') return res.redirect('/');
 
-app.post('/usuarios/deletar/:id', (req, res) => {return usuariodeletarpost(req,res)});
+  try {
+    const response = await axios.post(
+      `http://localhost:3000/tecnico/amostra/${req.params.coletor}/${req.params.arquivo}`,
+      req.body
+    );
 
-app.get('/usuarios/novo', (req, res) => {return usuarionovoget(req,res)});
+    const dados = response.data;
 
-app.post('/usuarios/novo', (req, res) => {return usuarionovopost(req,res)});
+    if (dados.erro) {
+      return res.send(dados.erro);
+    }
+
+    
+    req.session.amostraAnalise = {
+      coletor: dados.coletor,
+      arquivo: dados.arquivo,
+      variaveis: dados.variaveis,
+      escore_soma: dados.escore_soma,
+      escore_produto: dados.escore_produto
+    };
+
+    res.redirect(`/tecnico/amostra/${dados.coletor}/${dados.arquivo}/finalizar`);
+  } catch (err) {
+    console.error('Erro ao processar análise via API:', err);
+    res.status(500).send('Erro ao processar a análise.');
+  }
+});
+
+app.get('/tecnico/amostra/:coletor/:arquivo/finalizar', (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'tecnico1') return res.redirect('/');
+  const usuario = user.nome;
+
+  const { coletor, arquivo } = req.params;
+  const { escore_soma, escore_produto, variaveis } = req.session.amostraAnalise || {};
+
+  if (!escore_soma || !escore_produto || !variaveis) {
+    return res.status(400).send('Dados da análise não encontrados.');
+  }
+
+  res.render('tecnico_finalizar', {
+    usuario,
+    escore_soma,
+    escore_produto,
+    voltarPara: `/tecnico/amostra/${coletor}/${arquivo}`
+  });
+});
+
+app.post('/tecnico/amostra/:coletor/:arquivo/finalizar', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'tecnico1') return res.redirect('/');
+
+  const { coletor, arquivo, escore_soma, escore_produto, variaveis } = req.session.amostraAnalise || {};
+  const { estado, descricao } = req.body;
+
+  if (!coletor || !arquivo || !estado || !descricao) {
+    return res.status(400).send('Dados incompletos para finalizar análise.');
+  }
+
+  try {
+    const response = await axios.post(
+      `http://localhost:3000/tecnico/amostra/${coletor}/${arquivo}/finalizar`,
+      {
+        estado,
+        descricao,
+        escore_soma,
+        escore_produto,
+        variaveis
+      }
+    );
+
+    const dados = response.data;
+
+    if (dados.erro) {
+      return res.send(dados.erro);
+    }
+
+    req.session.amostraAnalise = null;
+
+    res.send(`
+      <script>
+        alert("Análise concluída com sucesso!");
+        window.location.href = "/tecnico";
+      </script>
+    `);
+  } catch (err) {
+    console.error('Erro ao salvar análise via API:', err);
+    res.status(500).send('Erro ao salvar os dados da análise.');
+  }
+});
+
+app.get('/api/indices', async (req, res) => {
+  try {
+    const response = await axios.get('http://localhost:3000/api/indices');
+    res.json(response.data.indices);
+  } catch (err) {
+    console.error('Erro ao buscar índices da API:', err);
+    res.status(500).json({ erro: 'Erro ao carregar índices.' });
+  }
+});
+
+app.get('/indices', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+  const usuario = user.nome;
+
+  try {
+    const response = await axios.get('http://localhost:3000/api/indices'); 
+    const { indices } = response.data;
+
+    res.render('admin_indices', { usuario, indices });
+  } catch (err) {
+    console.error('Erro ao buscar índices na API:', err);
+    res.status(500).send('Erro ao carregar os índices.');
+  }
+});
+
+app.get('/indices/novo', async (req, res) => {
+    const user = req.session.usuario;
+    if (!user || user.id !== 'admin1') return res.redirect('/');
+    const usuario = user.nome;
+    res.render('admin_indices_novo', { usuario });
+});
+
+app.post('/indices/novo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+  try {
+    const response = await axios.post('http://localhost:3000/indices/novo', req.body);
+    const dados = response.data;
+    if (dados.erro) {
+      return res.send(`
+        <script>
+          alert("${dados.erro}");
+          window.history.back();
+        </script>
+      `);
+    }
+    res.send(`
+      <script>
+        alert("${dados.mensagem}");
+        window.location.href = "/indices";
+      </script>
+    `);
+  } catch (err) {
+    console.error('Erro ao criar índice via API:', err);
+    return res.status(500).send('Erro ao criar índice.');
+  }
+});
+app.post('/indices/deletar/:id', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  const { id } = req.params;
+
+  try {
+    const response = await axios.post(`http://localhost:3000/indices/deletar/${id}`);
+    const dados = response.data;
+
+    if (dados.erro) {
+      return res.send(`
+        <script>
+          alert("${dados.erro}");
+          window.history.back();
+        </script>
+      `);
+    }
+
+    res.send(`
+      <script>
+        alert("${dados.mensagem}");
+        window.location.href = "/indices";
+      </script>
+    `);
+  } catch (err) {
+    console.error('Erro ao excluir índice via API:', err);
+    return res.status(500).send('Erro ao excluir índice.');
+  }
+});
+
+app.get('/indices/editar/:id', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  const { id } = req.params;
+
+  try {
+    const response = await axios.get(`http://localhost:3000/indices/editar/${id}`);
+    const indice = response.data;
+
+    res.render('admin_indices_editar', {
+      usuario: user.nome,
+      id: indice.id,
+      nome: indice.nome,
+      descricao: indice.descricao,
+      variaveis: indice.variaveis
+    });
+  } catch (err) {
+    console.error('Erro ao buscar índice via API:', err);
+    res.status(500).send('Erro ao carregar o índice.');
+  }
+});
+
+app.post('/indices/editar/:id', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  const { id } = req.params;
+
+  try {
+    const response = await axios.post(`http://localhost:3000/indices/editar/${id}`, req.body);
+    const dados = response.data;
+
+    if (dados.erro) {
+      return res.send(`
+        <script>
+          alert("${dados.erro}");
+          window.history.back();
+        </script>
+      `);
+    }
+
+    return res.send(`
+      <script>
+        alert("${dados.mensagem}");
+        window.location.href = "/indices";
+      </script>
+    `);
+  } catch (err) {
+    console.error('Erro ao editar índice via API:', err);
+    res.status(500).send(`
+      <script>
+        alert("Erro ao editar índice.");
+        window.history.back();
+      </script>
+    `);
+  }
+});
+
+app.get('/usuarios', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+  const usuario = user.nome;
+
+  try {
+    const response = await axios.get('http://localhost:3000/usuarios');
+    const { usuarios } = response.data;
+
+    res.render('admin_usuarios', { usuario, usuarios });
+  } catch (err) {
+    console.error('Erro ao carregar usuários via API:', err);
+    res.status(500).send('Erro ao carregar usuários.');
+  }
+});
+
+app.get('/usuarios/editar/:nome', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  const nome = req.params.nome;
+
+  try {
+    const response = await axios.get(`http://localhost:3000/usuarios/editar/${nome}`);
+    const usuario = response.data;
+
+    res.render('admin_editar_usuario', {user, usuario });
+  } catch (err) {
+    console.error('Erro ao buscar usuário via API:', err);
+
+    const erroMsg = err.response?.data?.erro || 'Erro ao carregar os dados do usuário.';
+    res.status(500).send(`
+      <script>
+        alert("${erroMsg}");
+        window.location.href = "/usuarios";
+      </script>
+    `);
+  }
+});
+
+app.post('/usuarios/atualizar/:nome', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  const nome = req.params.nome;
+
+  try {
+    const response = await axios.post(`http://localhost:3000/usuarios/atualizar/${nome}`, req.body);
+    const dados = response.data;
+
+    if (dados.erro) {
+      return res.send(`
+        <script>
+          alert("${dados.erro}");
+          window.history.back();
+        </script>
+      `);
+    }
+
+    return res.send(`
+      <script>
+        alert("${dados.mensagem}");
+        window.location.href = "/usuarios";
+      </script>
+    `);
+  } catch (err) {
+    console.error("Erro ao atualizar usuário via API:", err);
+    res.status(500).send(`
+      <script>
+        alert("Erro ao atualizar o usuário.");
+        window.history.back();
+      </script>
+    `);
+  }
+});
+
+app.post('/usuarios/deletar/:id', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  const { id } = req.params;
+
+  try {
+    const response = await axios.post(`http://localhost:3000/usuarios/deletar/${id}`);
+    const dados = response.data;
+
+    if (dados.erro) {
+      return res.send(`
+        <script>
+          alert("${dados.erro}");
+          window.history.back();
+        </script>
+      `);
+    }
+
+    return res.send(`
+      <script>
+        alert("${dados.mensagem}");
+        window.location.href = "/usuarios";
+      </script>
+    `);
+  } catch (err) {
+    console.error("Erro ao deletar usuário via API:", err);
+    res.status(500).send(`
+      <script>
+        alert("Erro ao deletar o usuário.");
+        window.history.back();
+      </script>
+    `);
+  }
+});
+
+app.get('/usuarios/novo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+  const usuario = user.nome;
+  res.render('admin_usuario_novo', { usuario});
+});
+
+app.post('/usuarios/novo', async (req, res) => {
+  const user = req.session.usuario;
+  if (!user || user.id !== 'admin1') return res.redirect('/');
+
+  try {
+    const response = await axios.post('http://localhost:3000/usuarios/novo', req.body);
+    const dados = response.data;
+
+    if (dados.erro) {
+      return res.send(`
+        <script>
+          alert("${dados.erro}");
+          window.history.back();
+        </script>
+      `);
+    }
+
+    return res.send(`
+      <script>
+        alert("${dados.mensagem}");
+        window.location.href = "/usuarios";
+      </script>
+    `);
+  } catch (err) {
+    console.error("Erro ao criar usuário via API:", err);
+    return res.status(500).send(`
+      <script>
+        alert("Erro ao criar o usuário.");
+        window.history.back();
+      </script>
+    `);
+  }
+});
 
 
 app.listen(8090, () => {

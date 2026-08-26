@@ -1,59 +1,39 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Painel do Técnico</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-  <style>
-    body {
-      background: linear-gradient(to bottom right, #2196f3, #e3f2fd);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', sans-serif;
-      position: relative;
-    }
 
-    .usuario-info {
-      position: absolute;
-      top: 20px;
-      left: 30px;
-      font-weight: bold;
-      color: #ffffff;
-      font-size: 1.1rem;
-    }
 
-    .btn-acesso {
-      padding: 1.2rem 2.5rem;
-      font-size: 1.3rem;
-      border-radius: 12px;
-      background-color: #0d47a1;
-      color: #fff;
-      transition: 0.3s ease;
-    }
+<style>
+  body {
+    overflow: hidden;    
+  }
 
-    .btn-acesso:hover {
-      background-color: #1565c0;
-      transform: scale(1.05);
-    }
-  </style>
-</head>
-<body>
+  .btn-acesso {
+    padding: 1.2rem 2.5rem;
+    font-size: 1.3rem;
+    border-radius: 12px;
+    background-color: #0d47a1;
+    color: #fff;
+    transition: 0.3s ease;
+  }
 
-  <!-- Nome do técnico no topo -->
-  <div class="usuario-info">
-    Técnico/a: <%= usuario %>
+  .btn-acesso:hover {
+    background-color: #1565c0;
+    transform: scale(1.05);
+  }
+</style>
+
+<div class="tecnico-info position-absolute top-0 start-0 m-3 px-4 py-2 bg-primary text-white fw-bold fs-5 rounded">
+  Técnico: <%= usuario %>
+</div>
+
+
+<!-- Botão Voltar -->
+<div class="position-fixed bottom-0 start-0 m-3">
+  <button class="btn btn-primary" onclick="location.href='/'" title="Voltar">
+    &#8592; Voltar
+  </button>
+</div>
+<div class="d-flex flex-column align-items-center justify-content-center text-center" style="min-height: 80vh;">
+  <div class="card-area w-100" style="max-width: 600px;">
+    <h2 class="mb-4">Bem-vindo ao Painel do Técnico</h2>
+    <a href="/solicitacoes" class="btn btn-primary btn-lg w-75 mb-3">Acessar solicitações</a>
   </div>
-
-  <!-- Botão central -->
-  <div>
-    <a href="/solicitacoes" class="btn btn-acesso shadow-lg">Acessar solicitações</a>
-  </div>
-
-</body>
-</html>
+</div>

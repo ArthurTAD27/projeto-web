@@ -1,0 +1,16 @@
+/* === estilo-normal.css === */
+body {
+  background: linear-gradient(to left, #3692e7, #ffffff);
+  color: #212529;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1, h2, h3, p, label, button, input, select, textarea {
+  color: inherit;
+}
+
+button, .btn {
+  font-weight: 500;
+}
+
+

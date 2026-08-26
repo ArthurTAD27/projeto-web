@@ -1,54 +1,53 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Detalhes da Amostra</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(to right, #cbe9f7, #50c1c9fb);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .top-bar {
-      background-color: #007bff;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="top-bar">
-    <span>Usuário: <%= usuario %></span>
-  </div>
 
-  <div class="container py-5">
-    <h2><%= amostra.nome_indice %></h2>
-    <p><strong>Coletor:</strong> <%= amostra.coletor %></p>
-    <p><strong>Data:</strong> <%= new Date(amostra.data_envio).toLocaleString() %></p>
-    <p><strong>Status:</strong> <%= amostra.status %></p>
 
+<style>
+  .coletor-info {
+    background-color: #007bff;
+    color: white;
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+</style>
+
+<!-- Informações do coletor -->
+<div class="coletor-info position-absolute top-0 start-0 m-3 px-4 py-2 bg-primary text-white fw-bold fs-5 rounded">
+  <span>Coletor: <%= usuario %></span>
+</div>
+
+<!-- Botão Voltar -->
+<div class="position-fixed bottom-0 start-0 m-4">
+  <button class="btn btn-primary" onclick="location.href='/results'" title="Voltar">
+    &#8592; Voltar
+  </button>
+</div>
+
+<!-- Conteúdo principal -->
+<div class="container py-5">
+  <h2><%= amostra.nome_indice %></h2>
+  <p><strong>Coletor:</strong> <%= amostra.coletor %></p>
+  <p><strong>Data:</strong> <%= new Date(amostra.data_envio).toLocaleString() %></p>
+  <p><strong>Status:</strong> <%= amostra.status %></p>
+
+  <hr>
+  <h4>Variáveis:</h4>
+  <ul>
+    <% amostra.variaveis.forEach(v => { %>
+      <li>
+        <strong><%= v.nome %>:</strong> <%= v.valor %> <%= v.unidade %>
+      </li>
+    <% }) %>
+  </ul>
+
+  <% if (amostra.status === 'concluido') { %>
     <hr>
-    <h4>Variáveis:</h4>
-    <ul>
-      <% amostra.variaveis.forEach(v => { %>
-        <li>
-          <strong><%= v.nome %>:</strong> <%= v.valor %> <%= v.unidade %>
-        </li>
-      <% }) %>
-    </ul>
-
-    <% if (amostra.status === 'concluido') { %>
-      <hr>
-      <h4>Resultado da Análise:</h4>
-      <p><strong>Escore (Somatório):</strong> <%= amostra.escore_soma %></p>
-      <p><strong>Escore (Produtório):</strong> <%= amostra.escore_produto %></p>
-      <p><strong>Estado da Água:</strong> <%= amostra.estado %></p>
-      <p><strong>Descrição:</strong> <%= amostra.descricao %></p>
-    <% } %>
-  </div>
-</body>
-</html>
+    <h4>Resultado da Análise:</h4>
+    <p><strong>Escore (Somatório):</strong> <%= amostra.escore_soma %></p>
+    <p><strong>Escore (Produtório):</strong> <%= amostra.escore_produto %></p>
+    <p><strong>Estado da Água:</strong> <%= amostra.estado %></p>
+    <p><strong>Descrição:</strong> <%= amostra.descricao %></p>
+  <% } %>
+</div>

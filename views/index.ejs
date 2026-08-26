@@ -1,47 +1,19 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(to left, #3692e7, #ffffff);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .login-container {
-      max-width: 400px;
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .login-title {
-      font-weight: bold;
-      margin-bottom: 1.5rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="position-absolute top-0 start-50 translate-middle-x">
-    <h1>SISTEMA DE QUALIDADE DE ÁGUA</h1>
-  </div>  
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-50">
   <div class="login-container">
     <h2 class="login-title text-center">Login no Sistema</h2>
-    <form method="POST" action="/login">
+
+    <form method="POST" action="/login" autocomplete="off">
       <div class="mb-3">
-        <label for="usuario" class="form-label">Selecione seu usuário:</label>
-        <select class="form-select" id="usuario" name="usuario">
-          <% usuarios.forEach(user => { %>
-            <option value="<%=user.nome%>"><%= user.nome %> - <%= user.perfil %></option>
-          <% }) %>
-        </select>
+        <label for="username" class="form-label">Usuário:</label>
+        <input type="text" class="form-control" id="username" name="usuario" required placeholder="Digite seu nome de usuário" autocomplete="off">
+      </div>
+
+      <div class="mb-3">
+        <label for="senha" class="form-label">Senha:</label>
+        <div class="input-group">
+          <input type="password" class="form-control" id="senha" name="senha" required placeholder="Digite sua senha" autocomplete="off">
+          <button type="button" class="btn btn-outline-secondary" onclick="toggleSenha()" title="Mostrar/ocultar senha">👁</button>
+        </div>
       </div>
 
       <div class="d-grid">
@@ -49,7 +21,55 @@
       </div>
     </form>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<style>
+  body {
+    overflow: hidden;
+  }
+
+  .login-container {
+    max-width: 400px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-title {
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Acessibilidade: Alto contraste */
+  body[data-contraste="true"] .login-container {
+    background-color: #000 !important;
+    color: #FFD700 !important;
+    box-shadow: 0 0 0 1px #FFD700 !important;
+  }
+
+  body[data-contraste="true"] input,
+  body[data-contraste="true"] .btn {
+    background-color: #FFD700 !important;
+    color: #000 !important;
+    border-color: white !important;
+  }
+
+  body[data-contraste="true"] .form-label {
+    color: #FFD700 !important;
+  }
+</style>
+
+<script>
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+      // Recarrega a página se veio do histórico
+      window.location.reload();
+    }
+  });
+  // Alternar exibição da senha
+  function toggleSenha() {
+    const senhaInput = document.getElementById('senha');
+    senhaInput.type = senhaInput.type === 'password' ? 'text' : 'password';
+  }
+</script>

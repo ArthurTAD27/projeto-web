@@ -1,27 +1,76 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Formulário</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-  <div class="container py-5">
-    <h1 class="mb-4"><%= indice.nome %></h1>
-    <p class="mb-4"><%= indice.descricao %></p>
 
-    <form action="/resultcol" method="POST">
-      <% indice.variaveis.forEach(v => { %>
-        <div class="mb-3">
-          <label for="<%= v.id %>" class="form-label"><%= v.nome %> <% if(v.unidade) { %> (<%= v.unidade %>) <% } %></label>
-          <input type="number" step="any" class="form-control" name="<%= v.id %>" id="<%= v.id %>" required>
-        </div>
-      <% }) %>
+<!-- Info do coletor -->
+<div class="coletor-info position-absolute top-0 start-0 m-3 px-4 py-2 fw-bold fs-5 rounded">
+  Coletor: <%= usuario.nome %>
+</div>
 
-      <div class="d-grid">
-        <button type="submit" class="btn btn-primary">Enviar Amostra</button>
+<!-- Botão Voltar -->
+<div class="position-fixed bottom-0 start-0 m-4">
+  <button class="btn btn-primary" onclick="location.href='/formtipo'" title="Voltar">
+    &#8592; Voltar
+  </button>
+</div>
+
+<!-- Conteúdo principal -->
+<div class="container py-5">
+  <h1 class="mb-4"><%= indice.nome %></h1>
+  <p class="mb-4"><%= indice.descricao %></p>
+
+  <form action="/resultcol" method="POST">
+    <% indice.variaveis.forEach(v => { %>
+      <div class="mb-3">
+        <label for="<%= v.id %>" class="form-label">
+          <%= v.nome %>
+          <% if(v.unidade) { %> (<%= v.unidade %>) <% } %>
+        </label>
+        <input
+          type="number"
+          step="any"
+          class="form-control"
+          name="<%= v.id %>"
+          id="<%= v.id %>"
+          required>
       </div>
-    </form>
-  </div>
-</body>
-</html>
+    <% }) %>
+
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary">Enviar Amostra</button>
+    </div>
+  </form>
+</div>
+
+<style>
+  /* Estilo do cabeçalho do coletor */
+  .coletor-info {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+  }
+
+  /* Modo alto contraste */
+  body[data-contraste="true"] {
+    background-color: #000 !important;
+  }
+
+  body[data-contraste="true"] .coletor-info {
+    background-color: #FFD700 !important;
+    color: #000 !important;
+    border: 2px solid white !important;
+  }
+
+  body[data-contraste="true"] .form-control,
+  body[data-contraste="true"] label,
+  body[data-contraste="true"] h1,
+  body[data-contraste="true"] p {
+    background-color: #000 !important;
+    color: #FFD700 !important;
+    border-color: #FFD700 !important;
+  }
+
+  body[data-contraste="true"] .btn-primary {
+    background-color: #FFD700 !important;
+    color: #000 !important;
+    font-weight: bold;
+    border: 2px solid white !important;
+  }
+</style>

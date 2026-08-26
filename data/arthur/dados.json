@@ -1,1 +1,6 @@
-{ "id": "tecnico1", "nome": "Arthur", "perfil": "tecnico" }
+{
+  "id": "admin1",
+  "nome": "Arthur",
+  "senha": "teste27",
+  "perfil": "admin"
+}

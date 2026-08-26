@@ -1,48 +1,29 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Editar Índice</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-  <style>
-    body {
-      background: linear-gradient(to bottom right, #fffde7, #e8f5e9);
-      min-height: 100vh;
-      padding: 2rem;
-    }
-
-    .admin-info {
-      position: absolute;
-      top: 20px;
-      left: 30px;
-      font-weight: bold;
-      color: #33691e;
-    }
-
+<style>
     .variavel-item {
-      background-color: #f1f8e9;
+      background-color: #99c299f8;
       padding: 10px;
       border-radius: 8px;
       margin-bottom: 10px;
-      border: 1px solid #c8e6c9;
+      border: 1px solid #000;
     }
   </style>
 </head>
 <body>
-  <div class="admin-info">
+  <div class="admin-info position-absolute top-0 start-0 m-3 px-4 py-2 bg-primary text-white fw-bold fs-5 rounded">
     Administrador: <%= usuario %>
   </div>
-
+  
+  <div class="position-fixed bottom-0 start-0 m-3">
+    <button class="btn btn-primary" onclick="location.href='/indices'" title="Voltar">
+      &#8592; Voltar
+    </button>
+  </div>
   <div class="container mt-5">
-    <h2 class="mb-4 text-primary">Editar Índice</h2>
+    <h2>Editar Índice</h2>
 
     <form method="POST" action="/indices/editar/<%= id %>">
       <div class="mb-3">
-        <label class="form-label">ID do Índice (não editável):</label>
+        <label class="fw-bold">ID do Índice (não editável):</label>
         <input type="text" class="form-control" value="<%= id %>" disabled>
       </div>
 
@@ -60,18 +41,18 @@
       <h5>Variáveis</h5>
       <div id="variaveis-container">
         <% variaveis.forEach((v, i) => { %>
-          <div class="variavel-item row align-items-end" id="variavel-<%= i %>">
+          <div class="variavel-item row align-items-end fw-bold" id="variavel-<%= i %>">
             <div class="col-md-4 mb-2">
               <label class="form-label">ID:</label>
-              <input type="text" name="variaveis[<%= i %>][id]" value="<%= v.id %>" class="form-control" required>
+              <input type="text" name="variaveis[<%= i %>][id]" value="<%= v.id %>" class="form-control fw-bold" required>
             </div>
             <div class="col-md-4 mb-2">
               <label class="form-label">Nome:</label>
-              <input type="text" name="variaveis[<%= i %>][nome]" value="<%= v.nome %>" class="form-control" required>
+              <input type="text" name="variaveis[<%= i %>][nome]" value="<%= v.nome %>" class="form-control fw-bold" required>
             </div>
             <div class="col-md-3 mb-2">
               <label class="form-label">Unidade (opcional):</label>
-              <input type="text" name="variaveis[<%= i %>][unidade]" value="<%= v.unidade %>" class="form-control">
+              <input type="text" name="variaveis[<%= i %>][unidade]" value="<%= v.unidade %>" class="form-control fw-bold">
             </div>
             <div class="col-md-1 mb-2 text-end">
               <button type="button" class="btn btn-outline-danger" onclick="removerVariavel('variavel-<%= i %>')">×</button>
@@ -128,5 +109,3 @@
       if (el) el.remove();
     }
   </script>
-</body>
-</html>

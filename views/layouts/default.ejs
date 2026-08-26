@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title><%= typeof title !== 'undefined' ? title : "Sistema de Monitoramento de Qualidade da Água" %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script>
+    // Fonte
+    const tamanho = localStorage.getItem("tamanhoFonte");
+    if (tamanho) {
+      document.documentElement.style.fontSize = `${tamanho}px`;
+    }
+
+    // Tema (CSS)
+    const temaSalvo = localStorage.getItem("tema") || "normal";
+    const temaHref = temaSalvo === "contraste"
+      ? "/css/estilo-alto-contraste.css"
+      : "/css/estilo-normal.css";
+
+    // Bootstrap
+    document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+
+    // Tema dinâmico
+    document.write('<link id="tema-css" rel="stylesheet" href="' + temaHref + '">');
+  </script>
+
+  <style>
+    html {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding-top: 4rem;
+      padding-bottom: 2rem;
+    }
+    .acessibilidade-controles {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botões de Acessibilidade -->
+  <div class="acessibilidade-controles d-flex gap-2">
+    <button class="btn btn-outline-primary btn-sm" onclick="alterarFonte('aumentar')">A+</button>
+    <button class="btn btn-outline-primary btn-sm" onclick="alterarFonte('diminuir')">A-</button>
+    <button class="btn btn-outline-dark btn-sm" onclick="alternarTema()">Contraste</button>
+  </div>
+
+  <!-- Conteúdo dinâmico das views -->
+  <main class="container mt-4">
+    <%- body %>
+  </main>
+
+  <!-- Script de acessibilidade -->
+  <script>
+    const temaEl = document.getElementById("tema-css");
+
+    function alterarFonte(acao) {
+      const html = document.documentElement;
+      let tamanhoAtual = parseFloat(getComputedStyle(html).fontSize);
+      if (acao === "aumentar") tamanhoAtual += 2;
+      else if (acao === "diminuir") tamanhoAtual -= 2;
+      html.style.fontSize = `${tamanhoAtual}px`;
+      localStorage.setItem("tamanhoFonte", tamanhoAtual);
+    }
+
+    function alternarTema() {
+      const atual = localStorage.getItem("tema") || "normal";
+      const novo = atual === "normal" ? "contraste" : "normal";
+      const href = novo === "normal"
+        ? "/css/estilo-normal.css"
+        : "/css/estilo-alto-contraste.css";
+      temaEl.setAttribute("href", href);
+      localStorage.setItem("tema", novo);
+    }
+
+    window.onload = () => {
+      // (Fonte e tema já aplicados antes do render)
+    };
+  </script>
+</body>
+</html>

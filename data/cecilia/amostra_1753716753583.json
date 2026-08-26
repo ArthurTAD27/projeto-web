@@ -1,0 +1,37 @@
+{
+  "coletor": "cecilia",
+  "indice": "iqa_bascaron",
+  "nome_indice": "Índice de Qualidade da Água (IQA - Báscaron)",
+  "data_envio": "2025-07-28T15:32:33.583Z",
+  "variaveis": [
+    {
+      "id": "n",
+      "nome": "Nitrogênio Total (N)",
+      "unidade": "mg/L",
+      "valor": 10,
+      "escore": 50,
+      "peso": 1
+    },
+    {
+      "id": "p",
+      "nome": "Fósforo Total (P)",
+      "unidade": "mg/L",
+      "valor": 20,
+      "escore": 80,
+      "peso": 2
+    },
+    {
+      "id": "cla",
+      "nome": "Cloretos (Cl⁻)",
+      "unidade": "mg/L",
+      "valor": 30,
+      "escore": 56,
+      "peso": 1
+    }
+  ],
+  "status": "concluido",
+  "escore_soma": 66.5,
+  "escore_produto": 65.06,
+  "estado": "Razoável",
+  "descricao": "Amostra Razoável\r\n"
+}

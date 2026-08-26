@@ -1,0 +1,19 @@
+{
+  "coletor": "cecilia",
+  "indice": "indice_genI",
+  "nome_indice": "índice generico",
+  "data_envio": "2025-07-28T15:32:46.344Z",
+  "variaveis": [
+    {
+      "id": "ce",
+      "nome": "CONDUTIVIDADE ELÉTRICA",
+      "unidade": "µS/cm",
+      "valor": 12
+    }
+  ],
+  "status": "pendente",
+  "escore_soma": null,
+  "escore_produto": null,
+  "estado": "",
+  "descricao": ""
+}

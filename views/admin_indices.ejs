@@ -1,69 +1,71 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Gerenciar Índices</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
-  <style>
-    body {
-      background: linear-gradient(to bottom right, #f1f8e9, #e3f2fd);
-      min-height: 100vh;
-      padding: 2rem;
-    }
+<style>
+  .btn-novo {
+    margin-bottom: 2rem;
+  }
+</style>
 
-    .admin-info {
-      background-color: #007bff;
-      color: white;
-      position: absolute;
-      top: 20px;
-      left: 30px;
-      padding: 0.75rem 1.5rem;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
+<div class="admin-info position-absolute top-0 start-0 m-3 px-4 py-2 bg-primary text-white fw-bold fs-5 rounded">
+  Administrador: <%= usuario %>
+</div>
 
-    .btn-novo {
-      margin-bottom: 2rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="admin-info">
-    Administrador: <%= usuario %>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gerenciar Índices</h2>
+    <a href="/indices/novo" class="btn btn-success btn-lg">+ Criar Novo Índice</a>
   </div>
 
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="text-primary">Gerenciar Índices</h2>
-      <a href="/indices/novo" class="btn btn-success btn-lg">+ Criar Novo Índice</a>
-    </div>
+  <div class="position-fixed bottom-0 start-0 m-3">
+    <button class="btn btn-primary" onclick="location.href='/admin'" title="Voltar">
+      &#8592; Voltar
+    </button>
+  </div>
 
-    <% if (indices.length === 0) { %>
-      <p>Nenhum índice cadastrado.</p>
-    <% } else { %>
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <% indices.forEach(indice => { %>
-          <div class="col">
-            <div class="card h-100 shadow">
-              <div class="card-body">
-                <h5 class="card-title"><%= indice.nome %></h5>
-                <p class="card-text text-muted">ID: <%= indice.id %></p>
-              </div>
-              <div class="card-footer d-flex justify-content-between">
-                <a href="/indices/editar/<%= indice.id %>" class="btn btn-primary btn-sm">Editar</a>
-                <form method="POST" action="/indices/deletar/<%= indice.id %>" onsubmit="return confirm('Tem certeza que deseja excluir este índice?')">
-                  <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                </form>
-              </div>
+  <div id="lista-indices" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <p>Carregando índices...</p>
+  </div>
+</div>
+
+<script>
+  async function carregarIndices() {
+    try {
+      const res = await fetch('/api/indices');
+      const indices = await res.json();
+
+      const container = document.getElementById('lista-indices');
+      container.innerHTML = '';
+
+      if (!indices.length) {
+        container.innerHTML = '<p>Nenhum índice cadastrado.</p>';
+        return;
+      }
+
+      indices.forEach(indice => {
+        const col = document.createElement('div');
+        col.className = 'col';
+        col.innerHTML = `
+          <div class="card h-100 shadow">
+            <div class="card-body">
+              <h5 class="card-title">${indice.nome}</h5>
+              <p class="card-text text-muted">ID: ${indice.id}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+              <a href="/indices/editar/${indice.id}" class="btn btn-primary btn-sm">Editar</a>
+              <form method="POST" action="/indices/deletar/${indice.id}" onsubmit="return confirm('Tem certeza que deseja excluir este índice?')">
+                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+              </form>
             </div>
           </div>
-        <% }) %>
-      </div>
-    <% } %>
-  </div>
-</body>
-</html>
+        `;
+        container.appendChild(col);
+      });
+    } catch (err) {
+      console.error('Erro ao carregar índices:', err);
+      document.getElementById('lista-indices').innerHTML = '<p class="text-danger">Erro ao carregar índices.</p>';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    carregarIndices();
+    setInterval(carregarIndices, 5000); // Atualiza a cada 5 segundos
+  });
+</script>

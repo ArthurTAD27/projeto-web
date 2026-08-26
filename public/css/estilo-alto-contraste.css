@@ -1,0 +1,88 @@
+/* === estilo-alto-contraste.css === */
+
+body {
+  background-color: #000 !important;
+  color: #FFD700 !important; /* amarelo ouro */
+}
+
+/* Tipografia geral */
+h1, h2, h3, h4, p, label, span, div, li, th, td{
+  color: inherit !important;
+  -ms-high-contrast-adjust: auto;
+}
+
+/* Contêineres e cards */
+.login-container {
+  background-color: #000 !important;
+  color: #FFD700 !important;
+  border: 1px solid #FFD700 !important;
+}
+.container{
+  background-color: #000 !important;
+  color: #FFD700 !important;
+
+}
+.card, .card *{
+  background-color: #161616 !important;
+  color: #FFD700 !important;
+}
+/* Formulários */
+input, select, textarea {
+  background-color: #000 !important;
+  color: #FFD700 !important;
+  border: 1px solid #FFD700 !important;
+}
+
+/* Botões */
+.btn {
+  background-color: #FFD700 !important;
+  color: #000 !important;
+  border: 2px solid white !important;
+  font-weight: bold;
+}
+
+/* Links */
+a {
+  color: #FFD700 !important;
+  text-decoration: underline;
+}
+
+/* Para escurecer bordas claras do Bootstrap */
+.form-control, .form-select {
+  background-color: #000 !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+
+}
+/* Coletor Info em Alto Contraste */
+.coletor-info {
+  background-color: #FFD700 !important;
+  color: #000 !important;
+  border: 2px solid white !important;
+}
+.tecnico-info {
+  background-color: #FFD700 !important;
+  color: #000 !important;
+  border: 2px solid white !important;
+}
+.admin-info {
+  background-color: #FFD700 !important;
+  color: #000 !important;
+  border: 2px solid white !important;
+}
+
+
+/* Placeholder visível em contraste */
+::placeholder {
+  color: #FFD700 !important;
+  opacity: 1 !important;
+}
+
+/* Tabela em alto contraste */
+table{
+  background-color: #000 !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+  border: 1px solid #FFD700 !important;
+}
+
